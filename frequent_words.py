@@ -67,7 +67,7 @@ def get_words(line):
         A list of words.
     """
     words = line.split()
-    return [word.strip(",'`.;\"!():?‘’").lower() for word in words]
+    return [word.strip(",'`.;\"!():?").lower() for word in words]
 
 
 def remove_negative_count(freq):

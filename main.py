@@ -2,10 +2,21 @@
 # Author: traillj
 
 import frequent_words as fw
+import word_stats
 
+
+# Number of frequent words to print.
 NUM_FREQUENT_WORDS = 20
+
+# The text to be analysed.
 CONTENT_FILENAME = "data/content1.txt"
+
+# Words to be excluded, one word per line.
 EXCLUDE_FILENAME = "data/exclude1.txt"
+
+# Only include alphanumeric characters and spaces,
+# one phrase per line.
+PHRASES_FILENAME = "data/phrases1.txt"
 
 
 def main():
@@ -21,8 +32,12 @@ def main():
     exclude = [x.strip().lower() for x in exclude]
 
     freq_list = fw.get_frequent_words(content, exclude, NUM_FREQUENT_WORDS)
+
     print_freq_list(freq_list)
+    print()
     print_num_excluded(freq_list, content, exclude)
+    print("\n")
+    print_phrase_counts(PHRASES_FILENAME, content)
 
 
 def print_freq_list(freq_list):
@@ -32,6 +47,7 @@ def print_freq_list(freq_list):
         freq_list = Most frequent words list, each item
                     a tuple of the form: (word, count).
     """
+    print(" ----- Frequent Words -----")
     rank = 1
     for item in freq_list:
         print("{0:2d}. {1:14s} {2:8d}".format(rank, item[0], item[1]))
@@ -52,8 +68,28 @@ def print_num_excluded(freq_list, content, exclude):
     last_rank_count = last_rank_item[1]
     num_excluded = fw.count_more_frequent(content, exclude,
                                           last_rank_count)
-    out = "\n{0} excluded words appeared more than {1} times."
+    out = "{0} excluded words appeared more than {1} times."
     print(out.format(num_excluded, last_rank_count))
+
+
+def print_phrase_counts(phrases_filename, content):
+    """
+    Prints phrase counts in a formatted manner.
+    INPUT:
+        phrases_filename = File of phrases, one per line, with
+                           only alphanumeric characters and spaces
+        content = List of lines containing words.
+    """
+    with open(phrases_filename) as file:
+        phrases = file.readlines()
+    phrases = [x.strip().lower() for x in phrases]
+
+    if len(phrases) > 0:
+        print("------------ Phrase Counts ------------")
+        for phrase in phrases:
+            phrase_words = phrase.split()
+            count = word_stats.count_matches(phrase_words, content)
+            print("{0:30s} {1:8d}".format(phrase, count))
 
 
 main()
