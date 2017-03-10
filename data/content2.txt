@@ -1,5 +1,5 @@
 the" the' THE.
 RED red Red
 blue' blue
-foo foo foo foo foo
+foo-foo foo foo foo
 four four

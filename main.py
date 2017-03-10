@@ -6,6 +6,7 @@ import word_stats
 
 
 # Number of frequent words to print.
+# Set to zero to not print frequent words.
 NUM_FREQUENT_WORDS = 20
 
 # The text to be analysed.
@@ -31,13 +32,16 @@ def main():
         exclude = file.readlines()
     exclude = [x.strip().lower() for x in exclude]
 
-    freq_list = fw.get_frequent_words(content, exclude, NUM_FREQUENT_WORDS)
+    if NUM_FREQUENT_WORDS > 0:
+        freq_list = fw.get_frequent_words(content, exclude, NUM_FREQUENT_WORDS)
+        print_freq_list(freq_list)
+        print()
+        print_num_excluded(freq_list, content, exclude)
+        print("\n")
 
-    print_freq_list(freq_list)
-    print()
-    print_num_excluded(freq_list, content, exclude)
-    print("\n")
     print_phrase_counts(PHRASES_FILENAME, content)
+    print("\n")
+    print_word_stats(content)
 
 
 def print_freq_list(freq_list):
@@ -90,6 +94,24 @@ def print_phrase_counts(phrases_filename, content):
             phrase_words = phrase.split()
             count = word_stats.count_matches(phrase_words, content)
             print("{0:30s} {1:8d}".format(phrase, count))
+
+
+def print_word_stats(content):
+    """
+    Prints the word count, average word length and longest words.
+    INPUT:
+        content = List of lines containing words.
+    """
+    print("---------------- Word Stats ----------------")
+
+    word_count = word_stats.count_words(content)
+    print("Word Count: {0}".format(word_count))
+
+    avg_word_len = word_stats.get_avg_word_len(content)
+    print("Average Word Length: {0:.2f}".format(avg_word_len))
+
+    longest_words = word_stats.get_longest_words(content)
+    print("Longest Words: {0}".format(", ".join(longest_words)))
 
 
 main()

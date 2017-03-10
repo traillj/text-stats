@@ -5,6 +5,7 @@
 # Can include a list of words to exclude.
 
 import operator
+import word_stats
 
 
 def get_frequent_words(content, exclude, size):
@@ -48,26 +49,13 @@ def create_freq_dict(content, exclude):
         freq[word] = -2**31
 
     for line in content:
-        words = get_words(line)
+        words = word_stats.get_words(line)
         for word in words:
             freq.setdefault(word, 0)
             freq[word] = freq[word] + 1
 
     freq = remove_negative_count(freq)
     return freq
-
-
-def get_words(line):
-    """
-    Gets the words from a line, removing common punctuation
-    marks at the beginning and end of each word.
-    INPUT:
-        line = String of words.
-    RETURN:
-        A list of words.
-    """
-    words = line.split()
-    return [word.strip(",'`.;\"!():?").lower() for word in words]
 
 
 def remove_negative_count(freq):
@@ -102,7 +90,7 @@ def count_more_frequent(content, words, min_count):
         freq[word] = 0
 
     for line in content:
-        words = get_words(line)
+        words = word_stats.get_words(line)
         for word in words:
             if freq.get(word) is not None:
                 freq[word] = freq[word] + 1
